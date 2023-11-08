@@ -1,24 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
+import FilterBar from './components/FilterBar';
+import UsersMapped from './components/UsersMapped';
+import { UsersList } from './models/users';
 
 function App() {
+  const [rate, setRate] = useState(0)
+  const [nameFilter, setNameFilter] = useState<string|null>(null)
+  const [stateFilter, setStateFilter] = useState<string|null>(null)
+  const filteredUsers = UsersList.filter(user => {
+    return (
+      (!nameFilter || user.full_name.toLocaleLowerCase().includes(nameFilter)) &&
+      (!stateFilter || user.state.toLocaleLowerCase().includes(stateFilter)) &&
+      (user.rate >= rate)
+    )
+  })
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <span>rate: {rate}</span>
+      <FilterBar setRate={setRate} setNameFilter={setNameFilter} setStateFilter={setStateFilter} stateFilter={stateFilter}/>
+      <UsersMapped users={filteredUsers}/>
     </div>
   );
 }
